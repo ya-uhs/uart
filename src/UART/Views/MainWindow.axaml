@@ -29,9 +29,15 @@
         <ColumnDefinition Width="*" MinWidth="300" />
       </Grid.ColumnDefinitions>
 
-      <!-- マクロパネル -->
-      <views:MacroView Grid.Column="0"
-                       DataContext="{Binding MacroViewModel}" />
+      <!-- 左パネル: マクロ / トリガー タブ -->
+      <TabControl Grid.Column="0" Padding="0">
+        <TabItem Header="Macros">
+          <views:MacroView DataContext="{Binding MacroViewModel}" />
+        </TabItem>
+        <TabItem Header="Triggers">
+          <views:TriggerView DataContext="{Binding TriggerViewModel}" />
+        </TabItem>
+      </TabControl>
 
       <!-- スプリッター -->
       <GridSplitter Grid.Column="1"

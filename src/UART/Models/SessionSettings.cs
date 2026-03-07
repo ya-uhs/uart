@@ -16,6 +16,7 @@ public class SessionSettings
     public string DisplayMode { get; set; } = "ASCII";
     public bool AutoScroll { get; set; } = true;
     public List<MacroItemData> Macros { get; set; } = new();
+    public List<TriggerItemData> Triggers { get; set; } = new();
 }
 
 /// <summary>
@@ -26,4 +27,16 @@ public class MacroItemData
     public string Name { get; set; } = "New Macro";
     public string Command { get; set; } = "";
     public string NewLine { get; set; } = "CRLF";
+}
+
+/// <summary>
+/// JSON保存用トリガーデータ
+/// </summary>
+public class TriggerItemData
+{
+    public string Name { get; set; } = "New Trigger";
+    public string Pattern { get; set; } = "";
+    public string Response { get; set; } = "";
+    public string NewLine { get; set; } = "CRLF";
+    public bool IsEnabled { get; set; } = true;
 }

@@ -19,6 +19,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     public ConnectionViewModel ConnectionViewModel { get; }
     public TerminalViewModel TerminalViewModel { get; }
     public MacroViewModel MacroViewModel { get; }
+    public TriggerViewModel TriggerViewModel { get; }
 
     public MainWindowViewModel()
     {
@@ -26,6 +27,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
         ConnectionViewModel = new ConnectionViewModel(_serialPortService);
         TerminalViewModel = new TerminalViewModel(_serialPortService);
         MacroViewModel = new MacroViewModel(TerminalViewModel);
+        TriggerViewModel = new TriggerViewModel(_serialPortService, TerminalViewModel);
 
         LoadSession();
     }
@@ -41,6 +43,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
 
             ConnectionViewModel.LoadSettings(settings);
             MacroViewModel.LoadFromSettings(settings.Macros);
+            TriggerViewModel.LoadFromSettings(settings.Triggers);
             TerminalViewModel.IsHexMode = settings.DisplayMode == "HEX";
             TerminalViewModel.AutoScroll = settings.AutoScroll;
         }
@@ -58,6 +61,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
             var settings = new SessionSettings();
             ConnectionViewModel.SaveSettings(settings);
             settings.Macros = MacroViewModel.GetMacroData();
+            settings.Triggers = TriggerViewModel.GetTriggerData();
             settings.DisplayMode = TerminalViewModel.IsHexMode ? "HEX" : "ASCII";
             settings.AutoScroll = TerminalViewModel.AutoScroll;
 
@@ -75,6 +79,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     public void Dispose()
     {
         SaveSession();
+        TriggerViewModel.Dispose();
         TerminalViewModel.Dispose();
         _serialPortService.Dispose();
     }
