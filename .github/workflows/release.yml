@@ -1,0 +1,77 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            rid: linux-x64
+            artifact: UART-linux-x64
+          - os: windows-latest
+            rid: win-x64
+            artifact: UART-win-x64
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish
+        run: >
+          dotnet publish src/UART/UART.csproj
+          -c Release
+          -r ${{ matrix.rid }}
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -o ./publish
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ./publish/
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download linux artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: UART-linux-x64
+          path: ./artifacts/linux
+
+      - name: Download windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: UART-win-x64
+          path: ./artifacts/windows
+
+      - name: Create archives
+        run: |
+          cd artifacts
+          tar czf UART-linux-x64.tar.gz -C linux .
+          zip -j UART-win-x64.zip windows/*
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/UART-linux-x64.tar.gz
+            artifacts/UART-win-x64.zip
+          generate_release_notes: true
