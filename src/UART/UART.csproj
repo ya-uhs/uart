@@ -11,6 +11,27 @@
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
 
+  <!--
+    Linux: システムの古い libSkiaSharp をロードしてしまう問題の回避。
+    NuGet キャッシュから 3.119.0 を出力ルートに直接コピーする。
+    出力ルートは .NET のネイティブライブラリ探索で /etc/ld.so.cache より先に参照される。
+  -->
+  <Target Name="CopyNativeSkiaForLinux" AfterTargets="Build"
+          Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+    <PropertyGroup>
+      <_SkiaRoot>$(NuGetPackageRoot)skiasharp.nativeassets.linux/3.119.0/runtimes/linux-x64/native</_SkiaRoot>
+      <_HarfRoot>$(NuGetPackageRoot)harfbuzzsharp.nativeassets.linux/7.3.0/runtimes/linux-x64/native</_HarfRoot>
+    </PropertyGroup>
+    <Copy SourceFiles="$(_SkiaRoot)/libSkiaSharp.so"
+          DestinationFolder="$(OutputPath)"
+          SkipUnchangedFiles="true"
+          ContinueOnError="true" />
+    <Copy SourceFiles="$(NuGetPackageRoot)harfbuzzsharp.nativeassets.linux/8.3.1.1/runtimes/linux-x64/native/libHarfBuzzSharp.so"
+          DestinationFolder="$(OutputPath)"
+          SkipUnchangedFiles="true"
+          ContinueOnError="true" />
+  </Target>
+
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.3.12" />
     <PackageReference Include="Avalonia.Desktop" Version="11.3.12" />
@@ -22,6 +43,8 @@
     </PackageReference>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
     <PackageReference Include="ScottPlot.Avalonia" Version="5.1.57" />
+    <!-- Avalonia が 2.88.9 を引くが ScottPlot は 3.119.0 が必要なので明示的に上書き -->
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.119.0" />
     <PackageReference Include="System.IO.Ports" Version="8.0.0" />
   </ItemGroup>
 </Project>
