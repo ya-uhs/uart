@@ -1,6 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Platform.Storage;
 using UART.ViewModels;
 
 namespace UART.Views;
@@ -23,7 +27,29 @@ public partial class TerminalView : UserControl
         _viewModel = DataContext as TerminalViewModel;
 
         if (_viewModel != null)
+        {
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
+            _viewModel.RequestSavePath = ShowSaveFileDialogAsync;
+        }
+    }
+
+    private async Task<string?> ShowSaveFileDialogAsync(string defaultName)
+    {
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel == null) return null;
+
+        var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Export Log",
+            SuggestedFileName = $"uart-log-{DateTime.Now:yyyyMMdd-HHmmss}",
+            FileTypeChoices = new List<FilePickerFileType>
+            {
+                new FilePickerFileType("Text file") { Patterns = new[] { "*.txt" } },
+                new FilePickerFileType("CSV file")  { Patterns = new[] { "*.csv" } },
+            }
+        });
+
+        return file?.TryGetLocalPath();
     }
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)

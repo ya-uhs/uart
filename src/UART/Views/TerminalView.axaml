@@ -24,6 +24,10 @@
                 Command="{Binding ClearTerminalCommand}"
                 Height="28"
                 ToolTip.Tip="Clear terminal" />
+        <Button Content="Export"
+                Command="{Binding ExportLogCommand}"
+                Height="28"
+                ToolTip.Tip="Export log to TXT or CSV" />
       </StackPanel>
     </Border>
 

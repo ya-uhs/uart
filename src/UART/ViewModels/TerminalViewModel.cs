@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -42,6 +44,9 @@ public partial class TerminalViewModel : ViewModelBase, IDisposable
     private string _sendText = "";
 
     public string DisplayModeLabel => IsHexMode ? "HEX" : "ASCII";
+
+    /// <summary>Viewがファイル保存ダイアログを表示するためのコールバック</summary>
+    public Func<string, Task<string?>>? RequestSavePath { get; set; }
 
     public TerminalViewModel(SerialPortService serialPortService)
     {
@@ -211,6 +216,52 @@ public partial class TerminalViewModel : ViewModelBase, IDisposable
         }
 
         SendText = _sendHistory[_historyIndex];
+    }
+
+    [RelayCommand]
+    private async Task ExportLog()
+    {
+        if (RequestSavePath == null) return;
+
+        var path = await RequestSavePath("log");
+        if (string.IsNullOrEmpty(path)) return;
+
+        try
+        {
+            if (path.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
+                ExportCsv(path);
+            else
+                ExportTxt(path);
+        }
+        catch (Exception ex)
+        {
+            DisplayText += $"[{DateTime.Now:HH:mm:ss.fff}] [ERR] Export error: {ex.Message}\n";
+        }
+    }
+
+    private void ExportTxt(string path)
+    {
+        var sb = new StringBuilder();
+        foreach (var entry in _entries)
+            sb.Append(FormatEntry(entry));
+        File.WriteAllText(path, sb.ToString(), Encoding.UTF8);
+    }
+
+    private void ExportCsv(string path)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine("Timestamp,Direction,HEX,ASCII");
+        foreach (var entry in _entries)
+        {
+            var ts = entry.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            var dir = entry.IsSent ? "TX" : "RX";
+            var hex = BitConverter.ToString(entry.Data).Replace("-", " ");
+            var ascii = Encoding.UTF8.GetString(entry.Data)
+                .Replace("\r\n", " ").Replace("\r", " ").Replace("\n", " ")
+                .Replace("\"", "\"\"");
+            sb.AppendLine($"\"{ts}\",{dir},\"{hex}\",\"{ascii}\"");
+        }
+        File.WriteAllText(path, sb.ToString(), Encoding.UTF8);
     }
 
     [RelayCommand]
