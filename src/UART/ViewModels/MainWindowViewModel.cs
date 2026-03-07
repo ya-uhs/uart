@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using UART.Models;
 
@@ -52,7 +51,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     }
 
     [RelayCommand]
-    public async Task SaveSession()
+    public void SaveSession()
     {
         try
         {
@@ -65,7 +64,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
             var dir = Path.GetDirectoryName(SettingsPath)!;
             Directory.CreateDirectory(dir);
             var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
-            await File.WriteAllTextAsync(SettingsPath, json, Encoding.UTF8);
+            File.WriteAllText(SettingsPath, json, Encoding.UTF8);
         }
         catch
         {
@@ -75,7 +74,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
 
     public void Dispose()
     {
-        SaveSession().GetAwaiter().GetResult();
+        SaveSession();
         TerminalViewModel.Dispose();
         _serialPortService.Dispose();
     }

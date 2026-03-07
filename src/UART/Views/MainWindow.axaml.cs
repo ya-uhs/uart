@@ -13,8 +13,7 @@ public partial class MainWindow : Window
     protected override void OnClosing(WindowClosingEventArgs e)
     {
         base.OnClosing(e);
-        // ウィンドウを閉じる前にセッションを保存
         if (DataContext is MainWindowViewModel vm)
-            vm.SaveSession().GetAwaiter().GetResult();
+            vm.SaveSession();
     }
 }
