@@ -104,7 +104,12 @@ public partial class TerminalViewModel : ViewModelBase, IDisposable
     {
         _entries.Add(entry);
         if (_entries.Count > MaxEntries)
+        {
             _entries.RemoveRange(0, _entries.Count - MaxEntries);
+            // DisplayText も _entries に合わせて再構築（無制限増加を防ぐ）
+            RefreshDisplayText();
+            return;
+        }
 
         DisplayText += FormatEntry(entry);
     }

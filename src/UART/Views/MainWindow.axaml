@@ -48,21 +48,23 @@
                     Background="#313244"
                     Width="4" />
 
-      <!-- 右ペイン: ターミナル + グラフ（GridSplitter で高さ可変） -->
-      <Grid Grid.Column="2" RowDefinitions="*,4,200">
+      <!-- 右ペイン: ターミナル + グラフ（グラフは IsEnabled 時のみ展開） -->
+      <Grid Grid.Column="2" RowDefinitions="*,Auto,Auto">
         <!-- ターミナル -->
         <views:TerminalView Grid.Row="0"
                             DataContext="{Binding TerminalViewModel}" />
 
-        <!-- 縦スプリッター -->
+        <!-- 縦スプリッター（グラフ有効時のみ表示） -->
         <GridSplitter Grid.Row="1"
+                      IsVisible="{Binding GraphViewModel.IsEnabled}"
                       ResizeDirection="Rows"
                       Background="#313244"
                       Height="4" />
 
-        <!-- グラフパネル（MinHeight/MaxHeight で可変範囲を制限） -->
+        <!-- グラフパネル（グラフ有効時のみ展開） -->
         <Border Grid.Row="2"
-                MinHeight="80" MaxHeight="600"
+                IsVisible="{Binding GraphViewModel.IsEnabled}"
+                Height="200" MinHeight="80" MaxHeight="600"
                 BorderThickness="0,0,0,0">
           <views:GraphView DataContext="{Binding GraphViewModel}" />
         </Border>

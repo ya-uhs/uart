@@ -54,7 +54,7 @@ public partial class GraphView : UserControl
     private void UpdatePlot()
     {
         var avaPlot = GetAvaPlot();
-        if (avaPlot == null || _viewModel == null) return;
+        if (avaPlot == null || _viewModel == null || !IsVisible) return;
 
         var ys = _viewModel.GetYData();
 
