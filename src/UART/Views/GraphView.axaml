@@ -36,8 +36,12 @@
       </StackPanel>
     </Border>
 
-    <!-- ScottPlot canvas -->
-    <sp:AvaPlot Grid.Row="1" Name="AvaPlot" />
+    <!-- AvaPlot: 有効時のみ表示。高さはここで管理（外側 Border は Auto） -->
+    <Border Grid.Row="1"
+            IsVisible="{Binding IsEnabled}"
+            Height="160" MinHeight="60">
+      <sp:AvaPlot Name="AvaPlot" />
+    </Border>
 
   </Grid>
 </UserControl>

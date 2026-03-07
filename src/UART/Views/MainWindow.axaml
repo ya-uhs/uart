@@ -48,7 +48,7 @@
                     Background="#313244"
                     Width="4" />
 
-      <!-- 右ペイン: ターミナル + グラフ（グラフは IsEnabled 時のみ展開） -->
+      <!-- 右ペイン: ターミナル + グラフ -->
       <Grid Grid.Column="2" RowDefinitions="*,Auto,Auto">
         <!-- ターミナル -->
         <views:TerminalView Grid.Row="0"
@@ -61,13 +61,10 @@
                       Background="#313244"
                       Height="4" />
 
-        <!-- グラフパネル（グラフ有効時のみ展開） -->
-        <Border Grid.Row="2"
-                IsVisible="{Binding GraphViewModel.IsEnabled}"
-                Height="200" MinHeight="80" MaxHeight="600"
-                BorderThickness="0,0,0,0">
-          <views:GraphView DataContext="{Binding GraphViewModel}" />
-        </Border>
+        <!-- グラフパネル: ツールバーは常時表示、AvaPlot のみ IsEnabled で折りたたむ -->
+        <!-- 高さは GraphView 内の AvaPlot Border が管理するので外側は Auto -->
+        <views:GraphView Grid.Row="2"
+                         DataContext="{Binding GraphViewModel}" />
       </Grid>
 
     </Grid>
