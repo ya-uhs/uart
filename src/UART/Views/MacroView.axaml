@@ -1,0 +1,97 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:UART.ViewModels"
+             xmlns:models="using:UART.Models"
+             mc:Ignorable="d"
+             x:Class="UART.Views.MacroView"
+             x:DataType="vm:MacroViewModel">
+
+  <Grid RowDefinitions="Auto,*,Auto">
+
+    <!-- Header -->
+    <Border Grid.Row="0" Background="#181825" Padding="6,4"
+            BorderThickness="0,0,0,1" BorderBrush="#313244">
+      <StackPanel Spacing="4">
+        <TextBlock Text="Macros" FontWeight="Bold" Foreground="#CDD6F4" FontSize="12" />
+        <StackPanel Orientation="Horizontal" Spacing="4">
+          <Button Content="+ Add" Command="{Binding AddMacroCommand}"
+                  Height="26" Padding="6,2"
+                  ToolTip.Tip="Add macro" />
+          <Button Content="Save" Command="{Binding SaveMacrosCommand}"
+                  Height="26" Padding="6,2"
+                  ToolTip.Tip="Save macros to file" />
+          <Button Content="Load" Command="{Binding LoadMacrosCommand}"
+                  Height="26" Padding="6,2"
+                  ToolTip.Tip="Load macros from file" />
+        </StackPanel>
+      </StackPanel>
+    </Border>
+
+    <!-- Macro list -->
+    <ListBox Grid.Row="1"
+             ItemsSource="{Binding Macros}"
+             SelectedItem="{Binding SelectedMacro}"
+             Background="#11111B"
+             Padding="4">
+      <ListBox.ItemTemplate>
+        <DataTemplate x:DataType="models:MacroItem">
+          <Grid ColumnDefinitions="*,Auto" Margin="0,2">
+            <!-- Execute button -->
+            <Button Grid.Column="0"
+                    Content="{Binding Name}"
+                    Command="{Binding $parent[ListBox].((vm:MacroViewModel)DataContext).ExecuteMacroCommand}"
+                    CommandParameter="{Binding}"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    Padding="8,4"
+                    Margin="0,0,4,0" />
+            <!-- Delete button -->
+            <Button Grid.Column="1"
+                    Content="X"
+                    Command="{Binding $parent[ListBox].((vm:MacroViewModel)DataContext).RemoveMacroCommand}"
+                    CommandParameter="{Binding}"
+                    Width="28" Height="28"
+                    Foreground="#F38BA8" />
+          </Grid>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+
+    <!-- Edit panel for selected macro -->
+    <Border Grid.Row="2" Background="#1E1E2E"
+            Padding="8" BorderThickness="0,1,0,0" BorderBrush="#313244"
+            IsVisible="{Binding SelectedMacro, Converter={x:Static ObjectConverters.IsNotNull}}">
+      <StackPanel Spacing="6">
+        <TextBlock Text="Edit Macro" FontSize="10" Foreground="#6C7086" />
+
+        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto">
+          <!-- Name -->
+          <TextBlock Grid.Row="0" Grid.Column="0" Text="Name:"
+                     VerticalAlignment="Center" Margin="0,0,6,4" FontSize="12" Foreground="#BAC2DE" />
+          <TextBox Grid.Row="0" Grid.Column="1"
+                   Text="{Binding SelectedMacro.Name}"
+                   Margin="0,0,0,4" FontSize="12" />
+
+          <!-- Command -->
+          <TextBlock Grid.Row="1" Grid.Column="0" Text="Command:"
+                     VerticalAlignment="Center" Margin="0,0,6,4" FontSize="12" Foreground="#BAC2DE" />
+          <TextBox Grid.Row="1" Grid.Column="1"
+                   Text="{Binding SelectedMacro.Command}"
+                   FontFamily="Cascadia Code,Consolas,monospace"
+                   Margin="0,0,0,4" FontSize="12" />
+
+          <!-- Newline -->
+          <TextBlock Grid.Row="2" Grid.Column="0" Text="Newline:"
+                     VerticalAlignment="Center" Margin="0,0,6,0" FontSize="12" Foreground="#BAC2DE" />
+          <ComboBox Grid.Row="2" Grid.Column="1"
+                    ItemsSource="{Binding NewLineOptions}"
+                    SelectedItem="{Binding SelectedMacro.NewLine}"
+                    FontSize="12" />
+        </Grid>
+      </StackPanel>
+    </Border>
+
+  </Grid>
+</UserControl>

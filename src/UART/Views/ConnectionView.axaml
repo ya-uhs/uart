@@ -1,0 +1,103 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:UART.ViewModels"
+             mc:Ignorable="d"
+             x:Class="UART.Views.ConnectionView"
+             x:DataType="vm:ConnectionViewModel">
+
+  <UserControl.Styles>
+    <Style Selector="Ellipse.status-dot">
+      <Setter Property="Fill" Value="#F38BA8"/>
+    </Style>
+    <Style Selector="Ellipse.status-dot.connected">
+      <Setter Property="Fill" Value="#50FA7B"/>
+    </Style>
+    <Style Selector="Border.status-badge">
+      <Setter Property="Background" Value="#3A1A1A"/>
+    </Style>
+    <Style Selector="Border.status-badge.connected">
+      <Setter Property="Background" Value="#1A3A1A"/>
+    </Style>
+  </UserControl.Styles>
+
+  <Border Background="#1E1E2E" Padding="8,6" BorderThickness="0,0,0,1" BorderBrush="#313244">
+    <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+
+      <!-- Port -->
+      <StackPanel Orientation="Vertical" Spacing="2">
+        <TextBlock Text="Port" FontSize="10" Foreground="#6C7086" />
+        <ComboBox ItemsSource="{Binding AvailablePorts}"
+                  SelectedItem="{Binding SelectedPort}"
+                  Width="130" />
+      </StackPanel>
+
+      <Button Content="Refresh"
+              Command="{Binding RefreshPortsCommand}"
+              VerticalAlignment="Bottom"
+              Height="32"
+              ToolTip.Tip="Refresh port list" />
+
+      <!-- Baud Rate -->
+      <StackPanel Orientation="Vertical" Spacing="2">
+        <TextBlock Text="Baud Rate" FontSize="10" Foreground="#6C7086" />
+        <ComboBox ItemsSource="{Binding BaudRates}"
+                  SelectedItem="{Binding SelectedBaudRate}"
+                  Width="110" />
+      </StackPanel>
+
+      <!-- Data Bits -->
+      <StackPanel Orientation="Vertical" Spacing="2">
+        <TextBlock Text="Data Bits" FontSize="10" Foreground="#6C7086" />
+        <ComboBox ItemsSource="{Binding DataBitsList}"
+                  SelectedItem="{Binding SelectedDataBits}"
+                  Width="70" />
+      </StackPanel>
+
+      <!-- Parity -->
+      <StackPanel Orientation="Vertical" Spacing="2">
+        <TextBlock Text="Parity" FontSize="10" Foreground="#6C7086" />
+        <ComboBox ItemsSource="{Binding ParityList}"
+                  SelectedItem="{Binding SelectedParity}"
+                  Width="90" />
+      </StackPanel>
+
+      <!-- Stop Bits -->
+      <StackPanel Orientation="Vertical" Spacing="2">
+        <TextBlock Text="Stop Bits" FontSize="10" Foreground="#6C7086" />
+        <ComboBox ItemsSource="{Binding StopBitsList}"
+                  SelectedItem="{Binding SelectedStopBits}"
+                  Width="80" />
+      </StackPanel>
+
+      <!-- Flow Control -->
+      <StackPanel Orientation="Vertical" Spacing="2">
+        <TextBlock Text="Flow" FontSize="10" Foreground="#6C7086" />
+        <ComboBox ItemsSource="{Binding HandshakeList}"
+                  SelectedItem="{Binding SelectedHandshake}"
+                  Width="90" />
+      </StackPanel>
+
+      <!-- Connect / Disconnect -->
+      <Button Content="{Binding ConnectButtonText}"
+              Command="{Binding ToggleConnectionCommand}"
+              VerticalAlignment="Bottom"
+              Width="100" Height="32"
+              FontWeight="Bold" />
+
+      <!-- Status indicator -->
+      <Border Classes="status-badge"
+              Classes.connected="{Binding IsConnected}"
+              CornerRadius="4" Padding="10,4" VerticalAlignment="Bottom">
+        <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+          <Ellipse Width="8" Height="8"
+                   Classes="status-dot"
+                   Classes.connected="{Binding IsConnected}" />
+          <TextBlock Text="{Binding StatusMessage}" FontSize="12" />
+        </StackPanel>
+      </Border>
+
+    </StackPanel>
+  </Border>
+</UserControl>
