@@ -29,7 +29,7 @@
                    FontSize="11" Foreground="#BAC2DE" />
         <NumericUpDown Value="{Binding MaxPoints}"
                        Minimum="50" Maximum="5000"
-                       Width="90" Height="26" FontSize="11" />
+                       Width="120" Height="26" FontSize="11" />
         <Button Content="Clear" Command="{Binding ClearGraphCommand}"
                 Height="26" Padding="6,2" FontSize="11"
                 ToolTip.Tip="Clear graph data" />

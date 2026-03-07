@@ -48,18 +48,25 @@
                     Background="#313244"
                     Width="4" />
 
-      <!-- 右ペイン: ターミナル + グラフ -->
-      <DockPanel Grid.Column="2">
-        <!-- グラフパネル（常時表示・GraphView内のトグルでON/OFF） -->
-        <Border DockPanel.Dock="Bottom"
-                Height="190"
-                BorderThickness="0,1,0,0" BorderBrush="#313244">
+      <!-- 右ペイン: ターミナル + グラフ（GridSplitter で高さ可変） -->
+      <Grid Grid.Column="2" RowDefinitions="*,4,200">
+        <!-- ターミナル -->
+        <views:TerminalView Grid.Row="0"
+                            DataContext="{Binding TerminalViewModel}" />
+
+        <!-- 縦スプリッター -->
+        <GridSplitter Grid.Row="1"
+                      ResizeDirection="Rows"
+                      Background="#313244"
+                      Height="4" />
+
+        <!-- グラフパネル（MinHeight/MaxHeight で可変範囲を制限） -->
+        <Border Grid.Row="2"
+                MinHeight="80" MaxHeight="600"
+                BorderThickness="0,0,0,0">
           <views:GraphView DataContext="{Binding GraphViewModel}" />
         </Border>
-
-        <!-- ターミナル（残りの領域を占有） -->
-        <views:TerminalView DataContext="{Binding TerminalViewModel}" />
-      </DockPanel>
+      </Grid>
 
     </Grid>
   </Grid>
