@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:UART.ViewModels"
+             xmlns:sp="clr-namespace:ScottPlot.Avalonia;assembly=ScottPlot.Avalonia"
+             mc:Ignorable="d"
+             x:Class="UART.Views.GraphView"
+             x:DataType="vm:GraphViewModel">
+
+  <Grid RowDefinitions="Auto,*">
+
+    <!-- Toolbar -->
+    <Border Grid.Row="0" Background="#181825" Padding="6,4"
+            BorderThickness="0,0,0,1" BorderBrush="#313244">
+      <StackPanel Orientation="Horizontal" Spacing="8">
+        <ToggleButton IsChecked="{Binding IsEnabled}"
+                      Content="Graph"
+                      Height="26" Padding="8,2" FontSize="11"
+                      FontWeight="Bold"
+                      ToolTip.Tip="Enable real-time graph" />
+        <TextBlock Text="Pattern:" VerticalAlignment="Center"
+                   FontSize="11" Foreground="#BAC2DE" />
+        <TextBox Text="{Binding Pattern}"
+                 FontFamily="Cascadia Code,Consolas,monospace"
+                 Width="180" Height="26" FontSize="11"
+                 ToolTip.Tip="Regex to extract a number from each received line (e.g. [-+]?\d+(?:\.\d+)?)" />
+        <TextBlock Text="Max:" VerticalAlignment="Center"
+                   FontSize="11" Foreground="#BAC2DE" />
+        <NumericUpDown Value="{Binding MaxPoints}"
+                       Minimum="50" Maximum="5000"
+                       Width="90" Height="26" FontSize="11" />
+        <Button Content="Clear" Command="{Binding ClearGraphCommand}"
+                Height="26" Padding="6,2" FontSize="11"
+                ToolTip.Tip="Clear graph data" />
+      </StackPanel>
+    </Border>
+
+    <!-- ScottPlot canvas -->
+    <sp:AvaPlot Grid.Row="1" Name="AvaPlot" />
+
+  </Grid>
+</UserControl>

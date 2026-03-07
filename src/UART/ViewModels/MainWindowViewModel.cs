@@ -21,6 +21,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     public MacroViewModel MacroViewModel { get; }
     public TriggerViewModel TriggerViewModel { get; }
     public ProtocolViewModel ProtocolViewModel { get; }
+    public GraphViewModel GraphViewModel { get; }
 
     public MainWindowViewModel()
     {
@@ -30,6 +31,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
         MacroViewModel = new MacroViewModel(TerminalViewModel);
         TriggerViewModel = new TriggerViewModel(_serialPortService, TerminalViewModel);
         ProtocolViewModel = new ProtocolViewModel(_serialPortService);
+        GraphViewModel = new GraphViewModel(_serialPortService);
 
         LoadSession();
     }
@@ -47,6 +49,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
             MacroViewModel.LoadFromSettings(settings.Macros);
             TriggerViewModel.LoadFromSettings(settings.Triggers);
             ProtocolViewModel.LoadFromSettings(settings.Protocol);
+            GraphViewModel.LoadFromSettings(settings.Graph);
             TerminalViewModel.IsHexMode = settings.DisplayMode == "HEX";
             TerminalViewModel.AutoScroll = settings.AutoScroll;
         }
@@ -66,6 +69,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
             settings.Macros = MacroViewModel.GetMacroData();
             settings.Triggers = TriggerViewModel.GetTriggerData();
             settings.Protocol = ProtocolViewModel.GetSettings();
+            settings.Graph = GraphViewModel.GetSettings();
             settings.DisplayMode = TerminalViewModel.IsHexMode ? "HEX" : "ASCII";
             settings.AutoScroll = TerminalViewModel.AutoScroll;
 
@@ -83,6 +87,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     public void Dispose()
     {
         SaveSession();
+        GraphViewModel.Dispose();
         ProtocolViewModel.Dispose();
         TriggerViewModel.Dispose();
         TerminalViewModel.Dispose();

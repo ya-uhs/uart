@@ -48,9 +48,18 @@
                     Background="#313244"
                     Width="4" />
 
-      <!-- ターミナル -->
-      <views:TerminalView Grid.Column="2"
-                          DataContext="{Binding TerminalViewModel}" />
+      <!-- 右ペイン: ターミナル + グラフ -->
+      <DockPanel Grid.Column="2">
+        <!-- グラフパネル（常時表示・GraphView内のトグルでON/OFF） -->
+        <Border DockPanel.Dock="Bottom"
+                Height="190"
+                BorderThickness="0,1,0,0" BorderBrush="#313244">
+          <views:GraphView DataContext="{Binding GraphViewModel}" />
+        </Border>
+
+        <!-- ターミナル（残りの領域を占有） -->
+        <views:TerminalView DataContext="{Binding TerminalViewModel}" />
+      </DockPanel>
 
     </Grid>
   </Grid>

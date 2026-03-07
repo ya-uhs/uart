@@ -18,6 +18,14 @@ public class SessionSettings
     public List<MacroItemData> Macros { get; set; } = new();
     public List<TriggerItemData> Triggers { get; set; } = new();
     public ProtocolSettings Protocol { get; set; } = new();
+    public GraphSettings Graph { get; set; } = new();
+}
+
+public class GraphSettings
+{
+    public bool IsEnabled { get; set; } = false;
+    public string Pattern { get; set; } = @"[-+]?\d+(?:\.\d+)?";
+    public int MaxPoints { get; set; } = 500;
 }
 
 public class ProtocolSettings
