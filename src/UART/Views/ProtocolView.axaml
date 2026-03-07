@@ -1,0 +1,120 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:UART.ViewModels"
+             xmlns:models="using:UART.Models"
+             mc:Ignorable="d"
+             x:Class="UART.Views.ProtocolView"
+             x:DataType="vm:ProtocolViewModel">
+
+  <Grid RowDefinitions="Auto,*,Auto">
+
+    <!-- Config header -->
+    <Border Grid.Row="0" Background="#181825" Padding="6,4"
+            BorderThickness="0,0,0,1" BorderBrush="#313244">
+      <StackPanel Spacing="5">
+
+        <!-- Enable toggle + Clear -->
+        <Grid ColumnDefinitions="*,Auto">
+          <CheckBox Grid.Column="0"
+                    IsChecked="{Binding IsEnabled}"
+                    Content="Enable Parser"
+                    FontSize="12" Foreground="#CDD6F4" />
+          <Button Grid.Column="1"
+                  Content="Clear"
+                  Command="{Binding ClearPacketsCommand}"
+                  Height="24" Padding="6,2" FontSize="11"
+                  ToolTip.Tip="Clear packet list" />
+        </Grid>
+
+        <!-- Delimiter -->
+        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto">
+          <TextBlock Grid.Column="0" Text="Delimiter:"
+                     VerticalAlignment="Center" Margin="0,0,6,0"
+                     FontSize="11" Foreground="#BAC2DE" />
+          <ComboBox Grid.Column="1"
+                    ItemsSource="{Binding DelimiterModes}"
+                    SelectedItem="{Binding DelimiterMode}"
+                    FontSize="11" Height="26" />
+        </Grid>
+
+        <!-- STX / ETX (STX/ETX mode only) -->
+        <Grid ColumnDefinitions="Auto,*,Auto,*"
+              IsVisible="{Binding IsStxEtxMode}">
+          <TextBlock Grid.Column="0" Text="STX:"
+                     VerticalAlignment="Center" Margin="0,0,4,0"
+                     FontSize="11" Foreground="#BAC2DE" />
+          <TextBox Grid.Column="1"
+                   Text="{Binding StxHex}"
+                   Watermark="02"
+                   FontFamily="Cascadia Code,Consolas,monospace"
+                   FontSize="11" Height="26" Margin="0,0,6,0" />
+          <TextBlock Grid.Column="2" Text="ETX:"
+                     VerticalAlignment="Center" Margin="0,0,4,0"
+                     FontSize="11" Foreground="#BAC2DE" />
+          <TextBox Grid.Column="3"
+                   Text="{Binding EtxHex}"
+                   Watermark="03"
+                   FontFamily="Cascadia Code,Consolas,monospace"
+                   FontSize="11" Height="26" />
+        </Grid>
+
+        <!-- Fixed length (Fixed Length mode only) -->
+        <Grid ColumnDefinitions="Auto,*"
+              IsVisible="{Binding IsFixedLengthMode}">
+          <TextBlock Grid.Column="0" Text="Length:"
+                     VerticalAlignment="Center" Margin="0,0,6,0"
+                     FontSize="11" Foreground="#BAC2DE" />
+          <NumericUpDown Grid.Column="1"
+                         Value="{Binding FixedLength}"
+                         Minimum="1" Maximum="4096"
+                         FontSize="11" Height="26" />
+        </Grid>
+
+        <!-- Checksum -->
+        <Grid ColumnDefinitions="Auto,*">
+          <TextBlock Grid.Column="0" Text="Checksum:"
+                     VerticalAlignment="Center" Margin="0,0,6,0"
+                     FontSize="11" Foreground="#BAC2DE" />
+          <ComboBox Grid.Column="1"
+                    ItemsSource="{Binding ChecksumModes}"
+                    SelectedItem="{Binding ChecksumMode}"
+                    FontSize="11" Height="26" />
+        </Grid>
+
+      </StackPanel>
+    </Border>
+
+    <!-- Packet list -->
+    <ListBox Grid.Row="1"
+             ItemsSource="{Binding Packets}"
+             SelectedItem="{Binding SelectedPacket}"
+             Background="#11111B"
+             Padding="4">
+      <ListBox.ItemTemplate>
+        <DataTemplate x:DataType="models:ParsedPacket">
+          <TextBlock Text="{Binding Display}"
+                     FontFamily="Cascadia Code,Consolas,monospace"
+                     FontSize="11"
+                     Foreground="#CDD6F4"
+                     TextWrapping="NoWrap" />
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+
+    <!-- Detail panel for selected packet -->
+    <Border Grid.Row="2" Background="#1E1E2E"
+            Padding="8" BorderThickness="0,1,0,0" BorderBrush="#313244"
+            IsVisible="{Binding SelectedPacket, Converter={x:Static ObjectConverters.IsNotNull}}">
+      <StackPanel Spacing="4">
+        <TextBlock Text="Selected Packet" FontSize="10" Foreground="#6C7086" />
+        <TextBlock Text="{Binding SelectedPacket.HexString}"
+                   FontFamily="Cascadia Code,Consolas,monospace"
+                   FontSize="11" Foreground="#A6E3A1"
+                   TextWrapping="Wrap" />
+      </StackPanel>
+    </Border>
+
+  </Grid>
+</UserControl>

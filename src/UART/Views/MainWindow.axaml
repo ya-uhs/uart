@@ -37,6 +37,9 @@
         <TabItem Header="Triggers">
           <views:TriggerView DataContext="{Binding TriggerViewModel}" />
         </TabItem>
+        <TabItem Header="Protocol">
+          <views:ProtocolView DataContext="{Binding ProtocolViewModel}" />
+        </TabItem>
       </TabControl>
 
       <!-- スプリッター -->

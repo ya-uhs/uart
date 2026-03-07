@@ -20,6 +20,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     public TerminalViewModel TerminalViewModel { get; }
     public MacroViewModel MacroViewModel { get; }
     public TriggerViewModel TriggerViewModel { get; }
+    public ProtocolViewModel ProtocolViewModel { get; }
 
     public MainWindowViewModel()
     {
@@ -28,6 +29,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
         TerminalViewModel = new TerminalViewModel(_serialPortService);
         MacroViewModel = new MacroViewModel(TerminalViewModel);
         TriggerViewModel = new TriggerViewModel(_serialPortService, TerminalViewModel);
+        ProtocolViewModel = new ProtocolViewModel(_serialPortService);
 
         LoadSession();
     }
@@ -44,6 +46,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
             ConnectionViewModel.LoadSettings(settings);
             MacroViewModel.LoadFromSettings(settings.Macros);
             TriggerViewModel.LoadFromSettings(settings.Triggers);
+            ProtocolViewModel.LoadFromSettings(settings.Protocol);
             TerminalViewModel.IsHexMode = settings.DisplayMode == "HEX";
             TerminalViewModel.AutoScroll = settings.AutoScroll;
         }
@@ -62,6 +65,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
             ConnectionViewModel.SaveSettings(settings);
             settings.Macros = MacroViewModel.GetMacroData();
             settings.Triggers = TriggerViewModel.GetTriggerData();
+            settings.Protocol = ProtocolViewModel.GetSettings();
             settings.DisplayMode = TerminalViewModel.IsHexMode ? "HEX" : "ASCII";
             settings.AutoScroll = TerminalViewModel.AutoScroll;
 
@@ -79,6 +83,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     public void Dispose()
     {
         SaveSession();
+        ProtocolViewModel.Dispose();
         TriggerViewModel.Dispose();
         TerminalViewModel.Dispose();
         _serialPortService.Dispose();

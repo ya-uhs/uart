@@ -17,6 +17,17 @@ public class SessionSettings
     public bool AutoScroll { get; set; } = true;
     public List<MacroItemData> Macros { get; set; } = new();
     public List<TriggerItemData> Triggers { get; set; } = new();
+    public ProtocolSettings Protocol { get; set; } = new();
+}
+
+public class ProtocolSettings
+{
+    public bool IsEnabled { get; set; } = false;
+    public string DelimiterMode { get; set; } = "Newline";
+    public string StxHex { get; set; } = "02";
+    public string EtxHex { get; set; } = "03";
+    public int FixedLength { get; set; } = 10;
+    public string ChecksumMode { get; set; } = "None";
 }
 
 /// <summary>
