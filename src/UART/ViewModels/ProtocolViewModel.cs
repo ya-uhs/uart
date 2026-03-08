@@ -58,7 +58,7 @@ public partial class ProtocolViewModel : ViewModelBase, IDisposable
     public List<string> ChecksumModes { get; } =
         new() { "None", "XOR", "Sum8", "CRC16" };
 
-    public bool IsStxEtxMode    => DelimiterMode == "STX/ETX";
+    public bool IsStxEtxMode => DelimiterMode == "STX/ETX";
     public bool IsFixedLengthMode => DelimiterMode == "Fixed Length";
 
     public ProtocolViewModel(SerialPortService serialPortService)
@@ -87,11 +87,11 @@ public partial class ProtocolViewModel : ViewModelBase, IDisposable
 
         var emitted = DelimiterMode switch
         {
-            "Newline"      => ParseNewline(),
-            "STX/ETX"      => ParseStxEtx(),
+            "Newline" => ParseNewline(),
+            "STX/ETX" => ParseStxEtx(),
             "Fixed Length" => ParseFixedLength(),
-            "None"         => ParseNone(),
-            _              => 0
+            "None" => ParseNone(),
+            _ => 0
         };
         _ = emitted;
     }
@@ -213,9 +213,9 @@ public partial class ProtocolViewModel : ViewModelBase, IDisposable
 
         var packet = new ParsedPacket
         {
-            Timestamp        = DateTime.Now,
-            Data             = data,
-            IsChecksumValid  = checksumValid
+            Timestamp = DateTime.Now,
+            Data = data,
+            IsChecksumValid = checksumValid
         };
 
         Packets.Add(packet);
@@ -227,10 +227,10 @@ public partial class ProtocolViewModel : ViewModelBase, IDisposable
     {
         return ChecksumMode switch
         {
-            "XOR"   => new[] { data.Aggregate((byte)0, (a, b) => (byte)(a ^ b)) },
-            "Sum8"  => new[] { (byte)(data.Sum(b => b) & 0xFF) },
+            "XOR" => new[] { data.Aggregate((byte)0, (a, b) => (byte)(a ^ b)) },
+            "Sum8" => new[] { (byte)(data.Sum(b => b) & 0xFF) },
             "CRC16" => ComputeCrc16(data),
-            _       => Array.Empty<byte>()
+            _ => Array.Empty<byte>()
         };
     }
 
@@ -261,22 +261,22 @@ public partial class ProtocolViewModel : ViewModelBase, IDisposable
 
     public void LoadFromSettings(ProtocolSettings s)
     {
-        IsEnabled     = s.IsEnabled;
+        IsEnabled = s.IsEnabled;
         DelimiterMode = s.DelimiterMode;
-        StxHex        = s.StxHex;
-        EtxHex        = s.EtxHex;
-        FixedLength   = s.FixedLength;
-        ChecksumMode  = s.ChecksumMode;
+        StxHex = s.StxHex;
+        EtxHex = s.EtxHex;
+        FixedLength = s.FixedLength;
+        ChecksumMode = s.ChecksumMode;
     }
 
     public ProtocolSettings GetSettings() => new()
     {
-        IsEnabled     = IsEnabled,
+        IsEnabled = IsEnabled,
         DelimiterMode = DelimiterMode,
-        StxHex        = StxHex,
-        EtxHex        = EtxHex,
-        FixedLength   = FixedLength,
-        ChecksumMode  = ChecksumMode
+        StxHex = StxHex,
+        EtxHex = EtxHex,
+        FixedLength = FixedLength,
+        ChecksumMode = ChecksumMode
     };
 
     [RelayCommand]

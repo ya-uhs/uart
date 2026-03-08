@@ -21,9 +21,9 @@ public class ParsedPacket
 
     public string StatusLabel => IsChecksumValid switch
     {
-        true  => "CHK:OK ",
+        true => "CHK:OK ",
         false => "CHK:ERR",
-        null  => "       "
+        null => "       "
     };
 
     public string Display =>

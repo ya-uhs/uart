@@ -113,14 +113,14 @@ public partial class GraphViewModel : ViewModelBase, IDisposable
     public void LoadFromSettings(GraphSettings s)
     {
         IsEnabled = s.IsEnabled;
-        Pattern   = s.Pattern;
+        Pattern = s.Pattern;
         MaxPoints = s.MaxPoints;
     }
 
     public GraphSettings GetSettings() => new()
     {
         IsEnabled = IsEnabled,
-        Pattern   = Pattern,
+        Pattern = Pattern,
         MaxPoints = MaxPoints
     };
 
