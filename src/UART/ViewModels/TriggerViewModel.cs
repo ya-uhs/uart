@@ -88,10 +88,10 @@ public partial class TriggerViewModel : ViewModelBase, IDisposable
 
         byte[] newLineBytes = trigger.NewLine switch
         {
-            "CR"   => new byte[] { 0x0D },
-            "LF"   => new byte[] { 0x0A },
+            "CR" => new byte[] { 0x0D },
+            "LF" => new byte[] { 0x0A },
             "CRLF" => new byte[] { 0x0D, 0x0A },
-            _      => Array.Empty<byte>()
+            _ => Array.Empty<byte>()
         };
 
         var responseBytes = Encoding.UTF8.GetBytes(trigger.Response).Concat(newLineBytes).ToArray();
@@ -120,10 +120,10 @@ public partial class TriggerViewModel : ViewModelBase, IDisposable
         Triggers = new ObservableCollection<TriggerItem>(
             data.Select(d => new TriggerItem
             {
-                Name      = d.Name,
-                Pattern   = d.Pattern,
-                Response  = d.Response,
-                NewLine   = d.NewLine,
+                Name = d.Name,
+                Pattern = d.Pattern,
+                Response = d.Response,
+                NewLine = d.NewLine,
                 IsEnabled = d.IsEnabled
             })
         );
@@ -132,10 +132,10 @@ public partial class TriggerViewModel : ViewModelBase, IDisposable
     public List<TriggerItemData> GetTriggerData() =>
         Triggers.Select(t => new TriggerItemData
         {
-            Name      = t.Name,
-            Pattern   = t.Pattern,
-            Response  = t.Response,
-            NewLine   = t.NewLine,
+            Name = t.Name,
+            Pattern = t.Pattern,
+            Response = t.Response,
+            NewLine = t.NewLine,
             IsEnabled = t.IsEnabled
         }).ToList();
 
