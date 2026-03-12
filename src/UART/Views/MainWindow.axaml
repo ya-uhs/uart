@@ -40,6 +40,9 @@
         <TabItem Header="Protocol">
           <views:ProtocolView DataContext="{Binding ProtocolViewModel}" />
         </TabItem>
+        <TabItem Header="Plugins">
+          <views:LuaPluginView DataContext="{Binding LuaPluginViewModel}" />
+        </TabItem>
       </TabControl>
 
       <!-- スプリッター -->

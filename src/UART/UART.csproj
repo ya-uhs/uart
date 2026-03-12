@@ -42,6 +42,7 @@
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+    <PackageReference Include="MoonSharp" Version="2.0.0" />
     <PackageReference Include="ScottPlot.Avalonia" Version="5.1.57" />
     <!-- Avalonia が 2.88.9 を引くが ScottPlot は 3.119.0 が必要なので明示的に上書き -->
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.119.0" />
