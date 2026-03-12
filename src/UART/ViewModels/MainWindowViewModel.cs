@@ -22,6 +22,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     public TriggerViewModel TriggerViewModel { get; }
     public ProtocolViewModel ProtocolViewModel { get; }
     public GraphViewModel GraphViewModel { get; }
+    public LuaPluginViewModel LuaPluginViewModel { get; }
 
     public MainWindowViewModel()
     {
@@ -32,6 +33,23 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
         TriggerViewModel = new TriggerViewModel(_serialPortService, TerminalViewModel);
         ProtocolViewModel = new ProtocolViewModel(_serialPortService);
         GraphViewModel = new GraphViewModel(_serialPortService);
+
+        var luaService = new LuaPluginService(_serialPortService, TerminalViewModel.AppendLog);
+        LuaPluginViewModel = new LuaPluginViewModel(luaService);
+
+        // 接続/切断時にLuaコールバックを通知
+        ConnectionViewModel.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(ConnectionViewModel.IsConnected))
+            {
+                if (ConnectionViewModel.IsConnected)
+                    luaService.NotifyConnected(
+                        ConnectionViewModel.SelectedPort ?? "",
+                        ConnectionViewModel.SelectedBaudRate);
+                else
+                    luaService.NotifyDisconnected();
+            }
+        };
 
         LoadSession();
     }
@@ -50,6 +68,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
             TriggerViewModel.LoadFromSettings(settings.Triggers);
             ProtocolViewModel.LoadFromSettings(settings.Protocol);
             GraphViewModel.LoadFromSettings(settings.Graph);
+            LuaPluginViewModel.LoadFromSettings(settings.LuaPlugins);
             TerminalViewModel.IsHexMode = settings.DisplayMode == "HEX";
             TerminalViewModel.AutoScroll = settings.AutoScroll;
         }
@@ -70,6 +89,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
             settings.Triggers = TriggerViewModel.GetTriggerData();
             settings.Protocol = ProtocolViewModel.GetSettings();
             settings.Graph = GraphViewModel.GetSettings();
+            settings.LuaPlugins = LuaPluginViewModel.GetPluginData();
             settings.DisplayMode = TerminalViewModel.IsHexMode ? "HEX" : "ASCII";
             settings.AutoScroll = TerminalViewModel.AutoScroll;
 
@@ -87,6 +107,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     public void Dispose()
     {
         SaveSession();
+        LuaPluginViewModel.Dispose();
         GraphViewModel.Dispose();
         ProtocolViewModel.Dispose();
         TriggerViewModel.Dispose();

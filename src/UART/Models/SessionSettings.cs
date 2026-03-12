@@ -19,6 +19,7 @@ public class SessionSettings
     public List<TriggerItemData> Triggers { get; set; } = new();
     public ProtocolSettings Protocol { get; set; } = new();
     public GraphSettings Graph { get; set; } = new();
+    public List<LuaPluginData> LuaPlugins { get; set; } = new();
 }
 
 public class GraphSettings
@@ -46,6 +47,16 @@ public class MacroItemData
     public string Name { get; set; } = "New Macro";
     public string Command { get; set; } = "";
     public string NewLine { get; set; } = "CRLF";
+}
+
+/// <summary>
+/// JSON保存用Luaプラグインデータ
+/// </summary>
+public class LuaPluginData
+{
+    public string Name { get; set; } = "New Plugin";
+    public string FilePath { get; set; } = "";
+    public bool IsEnabled { get; set; } = true;
 }
 
 /// <summary>

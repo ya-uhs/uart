@@ -1,0 +1,115 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:UART.ViewModels"
+             xmlns:models="using:UART.Models"
+             x:Class="UART.Views.LuaPluginView"
+             x:DataType="vm:LuaPluginViewModel">
+
+  <UserControl.Styles>
+    <Style Selector="Button">
+      <Setter Property="Background" Value="#313244"/>
+      <Setter Property="Foreground" Value="#CDD6F4"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Padding" Value="8,4"/>
+      <Setter Property="CornerRadius" Value="4"/>
+    </Style>
+    <Style Selector="Button:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="#45475A"/>
+    </Style>
+    <Style Selector="TextBox">
+      <Setter Property="Background" Value="#181825"/>
+      <Setter Property="Foreground" Value="#CDD6F4"/>
+      <Setter Property="BorderBrush" Value="#313244"/>
+      <Setter Property="SelectionBrush" Value="#585B70"/>
+    </Style>
+    <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+      <Setter Property="Background" Value="#313244"/>
+    </Style>
+  </UserControl.Styles>
+
+  <Grid RowDefinitions="Auto,*,Auto" Background="#1E1E2E">
+
+    <!-- ツールバー -->
+    <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="4"
+                Margin="4,4,4,4" Background="#181825">
+      <Button Content="+ Add" Command="{Binding AddPluginCommand}"
+              ToolTip.Tip="Luaスクリプトを追加" />
+      <Button Content="⟳ Reload" Command="{Binding ReloadPluginCommand}"
+              CommandParameter="{Binding SelectedPlugin}"
+              IsEnabled="{Binding HasSelectedPlugin}"
+              ToolTip.Tip="選択中のプラグインを再読み込み" />
+      <Button Content="⟳ All" Command="{Binding ReloadAllCommand}"
+              ToolTip.Tip="全プラグインを再読み込み" />
+      <Button Content="✕ Remove" Command="{Binding RemovePluginCommand}"
+              CommandParameter="{Binding SelectedPlugin}"
+              IsEnabled="{Binding HasSelectedPlugin}"
+              Background="#3A1A1A"
+              ToolTip.Tip="選択中のプラグインを削除" />
+    </StackPanel>
+
+    <!-- プラグイン一覧 -->
+    <ListBox Grid.Row="1"
+             ItemsSource="{Binding Plugins}"
+             SelectedItem="{Binding SelectedPlugin}"
+             Background="#1E1E2E"
+             BorderThickness="0">
+      <ListBox.ItemTemplate>
+        <DataTemplate x:DataType="models:LuaPlugin">
+          <Grid ColumnDefinitions="Auto,*" Margin="4,2">
+            <!-- 有効/無効トグル -->
+            <CheckBox Grid.Column="0"
+                      IsChecked="{Binding IsEnabled}"
+                      VerticalAlignment="Center"
+                      Margin="0,0,6,0" />
+            <!-- 名前 + エラー表示 -->
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+              <TextBlock Text="{Binding Name}"
+                         Foreground="#CDD6F4"
+                         FontSize="13" />
+              <TextBlock Text="{Binding LastError}"
+                         Foreground="#F38BA8"
+                         FontSize="10"
+                         IsVisible="{Binding LastError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                         TextTrimming="CharacterEllipsis"
+                         ToolTip.Tip="{Binding LastError}" />
+            </StackPanel>
+          </Grid>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+
+    <!-- 選択プラグインの詳細エディタ -->
+    <Border Grid.Row="2"
+            Background="#181825"
+            BorderBrush="#313244"
+            BorderThickness="0,1,0,0"
+            IsVisible="{Binding SelectedPlugin, Converter={x:Static ObjectConverters.IsNotNull}}"
+            Padding="8,6,8,8">
+      <StackPanel Spacing="4">
+        <TextBlock Text="Edit Plugin" FontSize="10" Foreground="#6C7086" />
+
+        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto">
+          <TextBlock Grid.Row="0" Grid.Column="0" Text="Name:"
+                     VerticalAlignment="Center" Margin="0,0,6,4" FontSize="12" Foreground="#BAC2DE" />
+          <TextBox Grid.Row="0" Grid.Column="1"
+                   Text="{Binding SelectedPlugin.Name}"
+                   Margin="0,0,0,4" FontSize="12" />
+
+          <TextBlock Grid.Row="1" Grid.Column="0" Text="File:"
+                     VerticalAlignment="Center" Margin="0,0,6,0" FontSize="12" Foreground="#BAC2DE" />
+          <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,Auto">
+            <TextBox Grid.Column="0"
+                     Text="{Binding SelectedPlugin.FilePath}"
+                     IsReadOnly="True"
+                     FontFamily="Cascadia Code,Consolas,monospace"
+                     FontSize="11" />
+            <Button Grid.Column="1" Content="..." Margin="4,0,0,0"
+                    x:Name="BrowseButton"
+                    ToolTip.Tip="スクリプトファイルを選択" />
+          </Grid>
+        </Grid>
+      </StackPanel>
+    </Border>
+
+  </Grid>
+</UserControl>

@@ -174,6 +174,12 @@ public partial class TerminalViewModel : ViewModelBase, IDisposable
         SendBytesInternal(data, null);
     }
 
+    /// <summary>Luaプラグイン等からログメッセージをターミナルに追記する（UIスレッド想定）</summary>
+    public void AppendLog(string message)
+    {
+        DisplayText += $"[{DateTime.Now:HH:mm:ss.fff}] [LOG] {message}\n";
+    }
+
     private void SendBytesInternal(byte[] data, string? displayText)
     {
         try
